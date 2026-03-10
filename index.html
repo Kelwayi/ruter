@@ -3,168 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ruter Avganger</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
+<title>🌸 Avganger 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --amber: #f5a623;
-    --amber-dim: #a36b10;
-    --amber-glow: rgba(245, 166, 35, 0.15);
-    --bg: #0a0a0a;
-    --panel: #111;
-    --panel-border: #222;
-    --text-muted: #555;
-    --green: #4caf50;
-    --red: #e53935;
+    --pink:      #ff8fab;
+    --pink-lt:   #ffc8dd;
+    --pink-bg:   #fff0f5;
+    --lavender:  #c8b6e2;
+    --mint:      #b5ead7;
+    --peach:     #ffcba4;
+    --yellow:    #fde68a;
+    --sky:       #bde0fe;
+    --white:     #ffffff;
+    --text:      #5c3d5e;
+    --text-soft: #b49bbf;
+    --card-bg:   #fff8fb;
+    --shadow:    rgba(255, 143, 171, 0.2);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Barlow Condensed', sans-serif;
-    background: var(--bg);
-    color: white;
+    font-family: 'Nunito', sans-serif;
+    background: var(--pink-bg);
+    color: var(--text);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 32px;
+    padding: 28px 32px;
     overflow: hidden;
+    position: relative;
   }
 
-  /* Subtle scanline overlay */
+  /* Floating background stars */
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .star {
+    position: absolute;
+    font-size: 18px;
+    animation: floatStar linear infinite;
+    opacity: 0.35;
+  }
+  @keyframes floatStar {
+    0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.35; }
+    90%  { opacity: 0.35; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* Wavy top border */
   body::before {
     content: '';
     position: fixed;
-    inset: 0;
+    top: 0; left: 0; right: 0;
+    height: 8px;
     background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 3px,
-      rgba(0,0,0,0.07) 3px,
-      rgba(0,0,0,0.07) 4px
+      90deg,
+      var(--pink) 0px, var(--pink) 20px,
+      var(--lavender) 20px, var(--lavender) 40px,
+      var(--mint) 40px, var(--mint) 60px,
+      var(--peach) 60px, var(--peach) 80px,
+      var(--yellow) 80px, var(--yellow) 100px,
+      var(--sky) 100px, var(--sky) 120px
     );
-    pointer-events: none;
-    z-index: 100;
+    z-index: 200;
   }
 
+  /* ---- HEADER ---- */
   header {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--panel-border);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .station-name {
-    font-size: 14px;
-    font-weight: 300;
-    letter-spacing: 0.3em;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 6px;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 
   h1 {
-    font-size: 52px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 48px;
     font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--amber);
-    text-shadow: 0 0 30px rgba(245, 166, 35, 0.4);
+    color: var(--pink);
     line-height: 1;
+    text-shadow: 3px 3px 0px var(--pink-lt);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .h1-emoji {
+    animation: wiggle 2.5s ease-in-out infinite;
+    display: inline-block;
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-8deg); }
+    50%       { transform: rotate(8deg); }
+  }
+
+  .clock-box {
+    background: var(--white);
+    border: 3px solid var(--pink-lt);
+    border-radius: 24px;
+    padding: 12px 24px;
+    box-shadow: 0 4px 16px var(--shadow);
+    text-align: center;
   }
 
   .clock {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 52px;
-    color: var(--amber);
-    text-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
-    letter-spacing: 0.05em;
+    font-family: 'Nunito', sans-serif;
+    font-size: 44px;
+    font-weight: 900;
+    color: var(--pink);
+    letter-spacing: 0.03em;
+    line-height: 1;
   }
 
-  /* Column headers */
+  .clock-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    margin-top: 2px;
+  }
+
+  /* ---- COLUMN HEADERS ---- */
   .table-header {
     display: grid;
-    grid-template-columns: 90px 1fr 160px;
+    grid-template-columns: 80px 1fr 180px;
     padding: 0 20px 10px;
     gap: 16px;
+    position: relative;
+    z-index: 10;
   }
 
   .table-header span {
     font-size: 11px;
-    letter-spacing: 0.3em;
+    font-weight: 800;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--text-muted);
-    font-weight: 400;
+    color: var(--text-soft);
   }
 
+  /* ---- ROWS ---- */
   #departures {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    position: relative;
+    z-index: 10;
   }
 
   .row {
     display: grid;
-    grid-template-columns: 90px 1fr 160px;
+    grid-template-columns: 80px 1fr 180px;
     align-items: center;
     gap: 16px;
-    padding: 18px 20px;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-left: 3px solid var(--amber-dim);
-    border-radius: 4px;
-    transition: border-left-color 0.3s ease;
-    animation: rowIn 0.4s ease forwards;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border: 2.5px solid var(--pink-lt);
+    border-radius: 20px;
+    box-shadow: 0 4px 14px var(--shadow);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     opacity: 0;
+    transform: scale(0.9) translateY(10px);
     position: relative;
-    overflow: hidden;
+    transition: box-shadow 0.2s;
   }
 
-  .row::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, var(--amber-glow) 0%, transparent 60%);
-    pointer-events: none;
+  .row:nth-child(1) { animation-delay: 0.00s; border-color: var(--pink);     }
+  .row:nth-child(2) { animation-delay: 0.06s; border-color: var(--lavender); }
+  .row:nth-child(3) { animation-delay: 0.12s; border-color: var(--mint);     }
+  .row:nth-child(4) { animation-delay: 0.18s; border-color: var(--peach);    }
+  .row:nth-child(5) { animation-delay: 0.24s; border-color: var(--yellow);   }
+  .row:nth-child(6) { animation-delay: 0.30s; border-color: var(--sky);      }
+  .row:nth-child(7) { animation-delay: 0.36s; border-color: var(--pink-lt);  }
+  .row:nth-child(8) { animation-delay: 0.42s; border-color: var(--lavender); }
+
+  @keyframes popIn {
+    to { opacity: 1; transform: scale(1) translateY(0); }
   }
 
-  .row:nth-child(1) { animation-delay: 0.0s; border-left-color: var(--amber); }
-  .row:nth-child(2) { animation-delay: 0.07s; }
-  .row:nth-child(3) { animation-delay: 0.14s; }
-  .row:nth-child(4) { animation-delay: 0.21s; }
-  .row:nth-child(5) { animation-delay: 0.28s; }
-  .row:nth-child(6) { animation-delay: 0.35s; }
-  .row:nth-child(7) { animation-delay: 0.42s; }
-  .row:nth-child(8) { animation-delay: 0.49s; }
-
-  @keyframes rowIn {
-    from { opacity: 0; transform: translateX(-10px); }
-    to   { opacity: 1; transform: translateX(0); }
-  }
-
+  /* Line badge — rotating border colors */
   .line-badge {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--amber);
-    color: #000;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 22px;
-    font-weight: 700;
-    width: 68px;
-    height: 44px;
-    border-radius: 4px;
-    letter-spacing: 0.05em;
+    background: var(--pink);
+    color: var(--white);
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    width: 62px;
+    height: 42px;
+    border-radius: 14px;
+    letter-spacing: 0.03em;
     flex-shrink: 0;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+    transition: transform 0.2s;
   }
 
+  .row:nth-child(2) .line-badge { background: var(--lavender); }
+  .row:nth-child(3) .line-badge { background: var(--mint);     color: var(--text); }
+  .row:nth-child(4) .line-badge { background: var(--peach);    color: var(--text); }
+  .row:nth-child(5) .line-badge { background: var(--yellow);   color: var(--text); }
+  .row:nth-child(6) .line-badge { background: var(--sky);      color: var(--text); }
+  .row:nth-child(7) .line-badge { background: var(--pink-lt);  color: var(--text); }
+  .row:nth-child(8) .line-badge { background: var(--lavender); }
+
   .destination {
-    font-size: 32px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: #fff;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -175,109 +248,150 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 2px;
+    gap: 3px;
   }
 
   .time-abs {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 30px;
-    color: var(--amber);
-    letter-spacing: 0.05em;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: 0.03em;
   }
 
   .time-rel {
-    font-size: 13px;
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--text-soft);
+    background: var(--pink-bg);
+    padding: 2px 8px;
+    border-radius: 20px;
   }
 
   .time-rel.soon {
-    color: var(--green);
+    color: #3d9970;
+    background: #e8fff3;
   }
 
   .time-rel.now {
-    color: var(--red);
-    font-weight: 600;
+    color: #fff;
+    background: var(--pink);
+    animation: blink 1s step-end infinite;
   }
 
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ---- FOOTER ---- */
   footer {
     margin-top: auto;
-    padding-top: 20px;
+    padding-top: 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    z-index: 10;
   }
 
   .footer-label {
-    font-size: 11px;
-    letter-spacing: 0.25em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
+  .heart {
     display: inline-block;
-    margin-right: 8px;
-    animation: pulse 2s ease-in-out infinite;
+    color: var(--pink);
+    animation: heartbeat 1.4s ease-in-out infinite;
   }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    14%       { transform: scale(1.3); }
+    28%       { transform: scale(1); }
+    42%       { transform: scale(1.2); }
+    70%       { transform: scale(1); }
   }
 
   .loading {
-    color: var(--text-muted);
+    color: var(--text-soft);
     font-size: 20px;
-    letter-spacing: 0.2em;
+    font-weight: 700;
+    letter-spacing: 0.15em;
     padding: 40px 20px;
-    text-transform: uppercase;
+    text-align: center;
+    animation: bounce 1s ease-in-out infinite alternate;
+  }
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-8px); }
   }
 
   .error {
-    color: var(--red);
+    color: var(--pink);
     font-size: 18px;
+    font-weight: 700;
     padding: 20px;
-    letter-spacing: 0.1em;
+    text-align: center;
   }
 </style>
 </head>
 <body>
 
+<!-- Floating stars/sparkles background -->
+<div class="stars" id="stars"></div>
+
 <header>
-  <div>
-    <div class="station-name">Holdeplass</div>
-    <h1>Neste avganger</h1>
+  <div class="header-left">
+    <div class="station-name">🌸 <span id="stop-name">Holdeplass</span> 🌸</div>
+    <h1><span class="h1-emoji">🚌</span> Neste avganger</h1>
   </div>
-  <div class="clock" id="clock">--:--:--</div>
+  <div class="clock-box">
+    <div class="clock" id="clock">--:--:--</div>
+    <div class="clock-label">Tid nå ✨</div>
+  </div>
 </header>
 
 <div class="table-header">
-  <span>Linje</span>
-  <span>Destinasjon</span>
-  <span style="text-align:right">Avgang</span>
+  <span>Linje 🎀</span>
+  <span>Destinasjon 🗺️</span>
+  <span style="text-align:right">Avgang ⏰</span>
 </div>
 
 <div id="departures">
-  <div class="loading">Laster avganger…</div>
+  <div class="loading">✨ Laster avganger… ✨</div>
 </div>
 
 <footer>
   <div class="footer-label">
-    <span class="pulse-dot"></span>Live · oppdateres hvert 30s
+    <span class="heart">♥</span> Live · oppdateres hvert 30s
   </div>
   <div class="footer-label" id="last-updated"></div>
 </footer>
 
 <script>
   const stopId = "NSR:StopPlace:6542";
+
+  // Spawn floating sparkles
+  const starChars = ['✦','✧','⋆','·','✩','★','♡','✿','◌'];
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 22; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.textContent = starChars[Math.floor(Math.random() * starChars.length)];
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.fontSize = (12 + Math.random() * 18) + 'px';
+    s.style.animationDuration = (12 + Math.random() * 20) + 's';
+    s.style.animationDelay = (-Math.random() * 25) + 's';
+    starsEl.appendChild(s);
+  }
 
   // Live clock
   function updateClock() {
@@ -290,9 +404,9 @@
 
   function relativeTime(depTime) {
     const diff = Math.floor((depTime - Date.now()) / 1000 / 60);
-    if (diff <= 0) return { text: 'Nå', cls: 'now' };
-    if (diff === 1) return { text: '1 min', cls: 'soon' };
-    if (diff <= 5) return { text: `${diff} min`, cls: 'soon' };
+    if (diff <= 0) return { text: '🚨 Nå!', cls: 'now' };
+    if (diff === 1) return { text: '1 min 💨', cls: 'soon' };
+    if (diff <= 5) return { text: `${diff} min 🏃`, cls: 'soon' };
     return { text: `${diff} min`, cls: '' };
   }
 
@@ -322,9 +436,8 @@
       const data = await response.json();
       const stop = data.data.stopPlace;
 
-      // Update station name if available
       if (stop.name) {
-        document.querySelector('.station-name').textContent = stop.name;
+        document.getElementById('stop-name').textContent = stop.name;
       }
 
       container.innerHTML = '';
@@ -348,10 +461,10 @@
       });
 
       document.getElementById('last-updated').textContent =
-        'Oppdatert ' + new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        '✨ Oppdatert ' + new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
     } catch (e) {
-      container.innerHTML = `<div class="error">Kunne ikke laste avganger. Sjekk tilkobling.</div>`;
+      container.innerHTML = `<div class="error">😿 Kunne ikke laste avganger. Sjekk tilkobling!</div>`;
       console.error(e);
     }
   }
