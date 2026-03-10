@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ruter Avganger</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: black;
+  color: white;
+  font-size: 40px;
+}
+
+table {
+  width: 100%;
+}
+
+td {
+  padding: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<h1>Neste avganger</h1>
+
+<table id="departures"></table>
+
+<script>
+const stopId = "NSR:StopPlace:6542";
+
+async function loadDepartures() {
+
+  const response = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "ET-Client-Name": "school-infoskjerm"
+    },
+    body: JSON.stringify({
+      query: `
+      {
+        stopPlace(id: "${stopId}") {
+          estimatedCalls(timeRange: 3600, numberOfDepartures: 5) {
+            expectedDepartureTime
+            destinationDisplay { frontText }
+            serviceJourney { line { publicCode } }
+          }
+        }
+      }
+      `
+    })
+  });
+
+  const data = await response.json();
+
+  const table = document.getElementById("departures");
+  table.innerHTML = "";
+
+  data.data.stopPlace.estimatedCalls.forEach(call => {
+
+    const time = new Date(call.expectedDepartureTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+
+    table.innerHTML += `
+      <tr>
+        <td>${call.serviceJourney.line.publicCode}</td>
+        <td>${call.destinationDisplay.frontText}</td>
+        <td>${time}</td>
+      </tr>
+    `;
+
+  });
+
+}
+
+loadDepartures();
+setInterval(loadDepartures, 30000);
+</script>
+
+</body>
+</html>
