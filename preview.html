@@ -1,83 +1,363 @@
 <!DOCTYPE html>
-<html>
+<html lang="no">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ruter Avganger</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family: Arial;
-  background: black;
-  color: white;
-  font-size: 40px;
-}
+  :root {
+    --amber: #f5a623;
+    --amber-dim: #a36b10;
+    --amber-glow: rgba(245, 166, 35, 0.15);
+    --bg: #0a0a0a;
+    --panel: #111;
+    --panel-border: #222;
+    --text-muted: #555;
+    --green: #4caf50;
+    --red: #e53935;
+  }
 
-table {
-  width: 100%;
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-td {
-  padding: 10px;
-}
+  body {
+    font-family: 'Barlow Condensed', sans-serif;
+    background: var(--bg);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    overflow: hidden;
+  }
+
+  /* Subtle scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.07) 3px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  .station-name {
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: 52px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--amber);
+    text-shadow: 0 0 30px rgba(245, 166, 35, 0.4);
+    line-height: 1;
+  }
+
+  .clock {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 52px;
+    color: var(--amber);
+    text-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
+    letter-spacing: 0.05em;
+  }
+
+  /* Column headers */
+  .table-header {
+    display: grid;
+    grid-template-columns: 90px 1fr 160px;
+    padding: 0 20px 10px;
+    gap: 16px;
+  }
+
+  .table-header span {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  #departures {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 90px 1fr 160px;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-left: 3px solid var(--amber-dim);
+    border-radius: 4px;
+    transition: border-left-color 0.3s ease;
+    animation: rowIn 0.4s ease forwards;
+    opacity: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--amber-glow) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .row:nth-child(1) { animation-delay: 0.0s; border-left-color: var(--amber); }
+  .row:nth-child(2) { animation-delay: 0.07s; }
+  .row:nth-child(3) { animation-delay: 0.14s; }
+  .row:nth-child(4) { animation-delay: 0.21s; }
+  .row:nth-child(5) { animation-delay: 0.28s; }
+  .row:nth-child(6) { animation-delay: 0.35s; }
+  .row:nth-child(7) { animation-delay: 0.42s; }
+  .row:nth-child(8) { animation-delay: 0.49s; }
+
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .line-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--amber);
+    color: #000;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    width: 68px;
+    height: 44px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  .destination {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .time-cell {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .time-abs {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 30px;
+    color: var(--amber);
+    letter-spacing: 0.05em;
+  }
+
+  .time-rel {
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  .time-rel.soon {
+    color: var(--green);
+  }
+
+  .time-rel.now {
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  footer {
+    margin-top: auto;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-label {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    display: inline-block;
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .loading {
+    color: var(--text-muted);
+    font-size: 20px;
+    letter-spacing: 0.2em;
+    padding: 40px 20px;
+    text-transform: uppercase;
+  }
+
+  .error {
+    color: var(--red);
+    font-size: 18px;
+    padding: 20px;
+    letter-spacing: 0.1em;
+  }
 </style>
-
 </head>
 <body>
 
-<h1>Neste avganger</h1>
+<header>
+  <div>
+    <div class="station-name">Holdeplass</div>
+    <h1>Neste avganger</h1>
+  </div>
+  <div class="clock" id="clock">--:--:--</div>
+</header>
 
-<table id="departures"></table>
+<div class="table-header">
+  <span>Linje</span>
+  <span>Destinasjon</span>
+  <span style="text-align:right">Avgang</span>
+</div>
+
+<div id="departures">
+  <div class="loading">Laster avganger…</div>
+</div>
+
+<footer>
+  <div class="footer-label">
+    <span class="pulse-dot"></span>Live · oppdateres hvert 30s
+  </div>
+  <div class="footer-label" id="last-updated"></div>
+</footer>
 
 <script>
-const stopId = "NSR:StopPlace:6542";
+  const stopId = "NSR:StopPlace:6542";
 
-async function loadDepartures() {
+  // Live clock
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent =
+      now.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
 
-  const response = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "ET-Client-Name": "school-infoskjerm"
-    },
-    body: JSON.stringify({
-      query: `
-      {
-        stopPlace(id: "${stopId}") {
-          estimatedCalls(timeRange: 3600, numberOfDepartures: 5) {
-            expectedDepartureTime
-            destinationDisplay { frontText }
-            serviceJourney { line { publicCode } }
-          }
-        }
+  function relativeTime(depTime) {
+    const diff = Math.floor((depTime - Date.now()) / 1000 / 60);
+    if (diff <= 0) return { text: 'Nå', cls: 'now' };
+    if (diff === 1) return { text: '1 min', cls: 'soon' };
+    if (diff <= 5) return { text: `${diff} min`, cls: 'soon' };
+    return { text: `${diff} min`, cls: '' };
+  }
+
+  async function loadDepartures() {
+    const container = document.getElementById('departures');
+    try {
+      const response = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "ET-Client-Name": "school-infoskjerm"
+        },
+        body: JSON.stringify({
+          query: `{
+            stopPlace(id: "${stopId}") {
+              name
+              estimatedCalls(timeRange: 3600, numberOfDepartures: 8) {
+                expectedDepartureTime
+                destinationDisplay { frontText }
+                serviceJourney { line { publicCode } }
+              }
+            }
+          }`
+        })
+      });
+
+      const data = await response.json();
+      const stop = data.data.stopPlace;
+
+      // Update station name if available
+      if (stop.name) {
+        document.querySelector('.station-name').textContent = stop.name;
       }
-      `
-    })
-  });
 
-  const data = await response.json();
+      container.innerHTML = '';
 
-  const table = document.getElementById("departures");
-  table.innerHTML = "";
+      stop.estimatedCalls.forEach(call => {
+        const depDate = new Date(call.expectedDepartureTime);
+        const absTime = depDate.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+        const rel = relativeTime(depDate);
 
-  data.data.stopPlace.estimatedCalls.forEach(call => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `
+          <div class="line-badge">${call.serviceJourney.line.publicCode}</div>
+          <div class="destination">${call.destinationDisplay.frontText}</div>
+          <div class="time-cell">
+            <div class="time-abs">${absTime}</div>
+            <div class="time-rel ${rel.cls}">${rel.text}</div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
 
-    const time = new Date(call.expectedDepartureTime).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      document.getElementById('last-updated').textContent =
+        'Oppdatert ' + new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    table.innerHTML += `
-      <tr>
-        <td>${call.serviceJourney.line.publicCode}</td>
-        <td>${call.destinationDisplay.frontText}</td>
-        <td>${time}</td>
-      </tr>
-    `;
+    } catch (e) {
+      container.innerHTML = `<div class="error">Kunne ikke laste avganger. Sjekk tilkobling.</div>`;
+      console.error(e);
+    }
+  }
 
-  });
-
-}
-
-loadDepartures();
-setInterval(loadDepartures, 30000);
+  loadDepartures();
+  setInterval(loadDepartures, 30000);
 </script>
-
 </body>
 </html>
